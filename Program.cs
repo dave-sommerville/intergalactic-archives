@@ -4,7 +4,10 @@
     {
         static void Main(string[] args)
         {
-            
+            string[] orderedChar = new string[26]
+            { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"};
+            string[] charKey = new string[26]
+            { "H", "Z", "A", "U", "Y", "E", "K", "G", "O", "T", "I", "R", "J", "V", "W", "N", "M", "F", "Q", "S", "D", "B", "X", "L", "C", "P"};
         }
         private static int PrintMenu(int options)
         {
@@ -21,6 +24,26 @@
             } while (!isValid);
             return intDecision;
         }
+        private static void PrintSearchResult(Artwork artwork)
+        {
+            if (artwork != null)
+            {
+                Console.WriteLine("Search result:");
+                Console.WriteLine(artwork.PrintArtwork());
+            }
+            else
+            {
+                Console.WriteLine("No matching artwork found.");
+            }
+        }
+        private static void PrintArray(Artwork[] artArray)
+        {
+            string[] arrayDisplay = new string[artArray.Length];
+            for (int i = 0; i < artArray.Length; i++)
+            {
+                Console.WriteLine(artArray[i].PrintArtwork());
+            }
+        }
         private static string ValidatedString()
         {
             string input;
@@ -33,6 +56,20 @@
 
             } while (!isValid);
             return input;
+        }
+
+        private static string[] UserEnteredArtwork()
+        {
+            string[] propertyArray = new string[4];
+            Console.WriteLine("Please enter Title:");
+            propertyArray[0] = ValidatedString();
+            Console.WriteLine("Please enter Artist:");
+            propertyArray[1] = ValidatedString();
+            Console.WriteLine("Please enter Year:");
+            propertyArray[2] = ValidatedString();
+            Console.WriteLine("Please enter Medium:");
+            propertyArray[3] = ValidatedString();
+            return propertyArray;
         }
 
         private static string[] SplitLine(string line, string splitChar, int splitSize)
