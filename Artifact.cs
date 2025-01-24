@@ -16,8 +16,8 @@
             string[] charKey = new string[26]
                 { "H", "Z", "A", "U", "Y", "E", "K", "G", "O", "T", "I", "R", "J", "V", "W", "N", "M", "F", "Q", "S", "D", "B", "X", "L", "C", "P"};
 
-            EncodedName = encodedName;                          //  Will need to 
-            DecodedName = DecodeItemName(EncodedName[0], 1, EncodedName[1], orderedChar, charKey);
+            EncodedName = encodedName; // should be split into an array by ' | '
+            //  DecodedName = DecodeItemName( Must further split the encodedName array* 
             Planet = planet;
             DiscoveryDate = discoveryDate;
             StorageLocation = storageLocation;
