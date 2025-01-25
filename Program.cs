@@ -19,6 +19,16 @@
  
 
         }
+
+        /* TO DO
+         * Design user experience 
+         * Create private helper classes where needed
+         * Binary search
+         * Adding/Returning search 
+         * Saving to txt file 
+        */
+        //  _______________________________________________________
+        //  MENU INTERFACE / DISPLAYS
         private static int PrintMenu(int options)
         {
             int intDecision;
@@ -54,7 +64,11 @@
                 Console.WriteLine(artArray[i].PrintArtifact());
             }
         }
-        private static string ValidatedString()
+
+        //  _______________________________________________________
+        //  MANUAL INPUT 
+
+        private static string ValidatedString() // I think this needs a return if string invalid 
         {
             string input;
             bool isValid;
@@ -81,8 +95,12 @@
             propertyArray[3] = ValidatedString();
             return propertyArray;
         }
-             
-        private static Artifact StringSplitter(ref string userInput, Artifact[] newArray, int count)
+
+        //  _______________________________________________________
+        //  TXT PROCESSOR 
+
+
+        private static string[] StringSplitter(ref string userInput, Artifact[] newArray)
         {
             string[] inputStringArr = userInput.Split(",", 6);
             string[] objectInput = new string[5];
@@ -93,11 +111,10 @@
                 inputStringArr[i] = objectInput[i];
             }
             userInput = inputStringArr[5];
-            newArray[count] = CreateObject(objectInput);
-            
+            return objectInput;
         }
 
-        private static Artifact CreateObject(string[] splitInput)
+        private static Artifact CreateArtifact(string[] splitInput)
         {
             if (splitInput.Length != 5)
             {
@@ -107,5 +124,58 @@
             Artifact newArtifact = new Artifact(nameArray, splitInput[1], splitInput[2], splitInput[3], splitInput[4]);
             return newArtifact;
         }
+
+        private static void ObjInsert(Artwork[] sortedArray, Artwork newArtwork, int count, string targetProperty)
+        {
+            for (int i = count; i > 0; i--)
+            {
+                string currentProperty = ChooseProperty(sortedArray[i - 1], targetProperty);
+                string newProperty = ChooseProperty(newArtwork, targetProperty);
+                if (string.Compare(currentProperty, newProperty, true) > 0)
+                {
+                    sortedArray[i] = sortedArray[i - 1];
+                }
+                else
+                {
+                    sortedArray[i] = newArtwork;
+                    return;
+                }
+            }
+            sortedArray[0] = newArtwork;
+        }
+
+        private static Artwork[] ObjSort(Artwork[] masterArray, string targetProperty, int count)
+        {
+            Artwork[] sortedArray = new Artwork[masterArray.Length];
+            count = 0;
+            for (int i = 0; i < masterArray.Length; i++)
+            {
+                ObjInsert(sortedArray, masterArray[i], count, targetProperty);
+                count++;
+            }
+            return sortedArray;
+        }
+
+        private static Artifact[] AddArtifact()
+        {
+                    private static void ObjInsert(Artwork[] sortedArray, Artwork newArtwork, int count, string targetProperty)
+        {
+            for (int i = count; i > 0; i--)
+            {
+                string currentProperty = ChooseProperty(sortedArray[i - 1], targetProperty);
+                string newProperty = ChooseProperty(newArtwork, targetProperty);
+                if (string.Compare(currentProperty, newProperty, true) > 0)
+                {
+                    sortedArray[i] = sortedArray[i - 1];
+                }
+                else
+                {
+                    sortedArray[i] = newArtwork;
+                    return;
+                }
+            }
+            sortedArray[0] = newArtwork;
+        }
+    }
     }
 }

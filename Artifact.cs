@@ -16,34 +16,31 @@
             string[] charKey = new string[26]
                 { "H", "Z", "A", "U", "Y", "E", "K", "G", "O", "T", "I", "R", "J", "V", "W", "N", "M", "F", "Q", "S", "D", "B", "X", "L", "C", "P"};
 
-            EncodedName = encodedName; // should be split into an array by ' | '
+            EncodedName = encodedName;
             //  DecodedName = DecodeItemName( Must further split the encodedName array* 
             Planet = planet;
             DiscoveryDate = discoveryDate;
             StorageLocation = storageLocation;
             Description = desciption;
         }
-        //  Recursive function
-        //  Need an int parse prior to using int (must be inside recursive func
-        //  Need to loop through the name array and create a char for each entry 
-        //  Join them into a regular word
-        public string DecodeItemName(string encodedInput, int cycle, int maxCycle, string[] startArr, string[] endArr)
-        {
-            if (cycle < maxCycle)
-            {
-                for (int i = 0; i < startArr.Length; i++)
-                {
-                    if (startArr[i] == encodedInput)
-                    {
-                        encodedInput = endArr[i];
-                    }
-                }
-                return DecodeItemName(encodedInput, cycle + 1, maxCycle, startArr, endArr);
-            } else
-            {
-                return encodedInput;
-            }
-        }
+        // I think this whole thing is whack 
+        //public string DecodeItemName(string encodedInput, int cycle, int maxCycle, string[] startArr, string[] endArr)
+        //{
+        //    if (cycle < maxCycle)
+        //    {
+        //        for (int i = 0; i < startArr.Length; i++)
+        //        {
+        //            if (startArr[i] == encodedInput)
+        //            {
+        //                encodedInput = endArr[i];
+        //            }
+        //        }
+        //        return DecodeItemName(encodedInput, cycle + 1, maxCycle, startArr, endArr);
+        //    } else
+        //    {
+        //        return encodedInput;
+        //    }
+        //}
 
         public string PrintArtifact()
         {

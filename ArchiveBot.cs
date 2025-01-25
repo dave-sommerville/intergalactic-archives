@@ -6,7 +6,7 @@ namespace intergalactic_archives
     public class ArchiveBot
     {
         public static string[] ReadFile(string filepath)
-        {       //  Catches added as per research into exceptions 
+        {       //  Catches need updating 
             try
             {
                 return File.ReadAllLines(filepath);
@@ -27,6 +27,7 @@ namespace intergalactic_archives
                 throw;
             }
         }
+        
 
     }
 }
