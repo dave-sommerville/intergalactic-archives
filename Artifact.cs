@@ -8,65 +8,84 @@
         public string DiscoveryDate;
         public string StorageLocation;
         public string Description;
+        public string[] orderedChar = new string[26]
+            { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"};
+        public string[] charKey = new string[26]
+            { "H", "Z", "A", "U", "Y", "E", "K", "G", "O", "T", "I", "R", "J", "V", "W", "N", "M", "F", "Q", "S", "D", "B", "X", "L", "C", "P"};
+        public string[] reverseChar = new string[26]
+            {"Z", "Y", "X", "W", "V", "U", "T", "S", "R", "Q", "P", "O", "N", "M", "L", "K", "J", "I", "H", "G", "F", "E", "D", "C", "B", "A" };
 
-        public Artifact(string[] encodedName, string decodedName, string planet, string discoveryDate, string storageLocation, string desciption)
+
+        public Artifact(string[] encodedName, string planet, string discoveryDate, string storageLocation, string desciption)
         {
-            string[] orderedChar = new string[26]
-                { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"};
-            string[] charKey = new string[26]
-                { "H", "Z", "A", "U", "Y", "E", "K", "G", "O", "T", "I", "R", "J", "V", "W", "N", "M", "F", "Q", "S", "D", "B", "X", "L", "C", "P"};
 
             EncodedName = encodedName;
-            DecodedName = decodedName; //(Must further split the encodedName array *
-          Planet = planet;
+            DecodedName = DecodeName(EncodedName); 
+            Planet = planet;
             DiscoveryDate = discoveryDate;
             StorageLocation = storageLocation;
             Description = desciption;
-        }
 
-        public void WhiteSpaceAdjust()
+
+        }
+        public string DecodeName(string[] encodedInput)
         {
-            for (int i = 0; i < EncodedName.Length; i++)
+            string[] outputArr = new string[encodedInput.Length];
+            for (int i = 0; i < encodedInput.Length; i++)
             {
-                if (EncodedName[i].Contains(" "))
+                if (encodedInput[i].Contains(" "))
                 {
-                    ResizeArray(2);
-                    string[] wordBreak = EncodedName[i].Split("");
-                    for (int j = EncodedName.Length - 1; j > i + wordBreak.Length - 1; j--)
-                    {
-                        EncodedName[j] = EncodedName[j - wordBreak.Length - 1];
-                    }
-                    for (int k = 0; k < 3; k++)
-                    {
-                        EncodedName[i + k] = wordBreak[k];
-                    }
-                    i += wordBreak.Length - 1;
+                    string[] wordBrArr = encodedInput[i].Split(" ");
+                    for (int j = 0; j < wordBrArr.Length; j++) {
+                        wordBrArr[j] = DecodeChar(wordBrArr[j], 1);
+                    } 
+                    string output = string.Join(" ", wordBrArr);
+                    outputArr[i] = output;
+                    break;
+                } else
+                {
+                    outputArr[i] = encodedInput[i];
+                    break;
                 }
             }
+            return string.Join("", outputArr);
         }
-        private void ResizeArray(int byNum)
+        public string DecodeChar(string codeChar, int cycle)
         {
-            string[] newArray = new string[EncodedName.Length + byNum];
-            EncodedName = newArray;
+            string[] splitCode = codeChar.Split("");
+            string letterReturn = splitCode[0];
+            int maxCycle = ReturnValidInt(splitCode[1]);
+            if (cycle < maxCycle)
+            {
+                for (int i = 0; i < orderedChar.Length; i++)
+                {
+                    if (orderedChar[i] == letterReturn)
+                    {
+                        letterReturn = charKey[i];
+                        break;
+                    }
+                }
+                return DecodeChar(codeChar, cycle + 1);
+            }
+            else
+            {
+                return letterReturn;
+            }
         }
-        // I think this whole thing is whack 
-        //public string DecodeItemName(string encodedInput, int cycle, int maxCycle, string[] startArr, string[] endArr)
-        //{
-        //    if (cycle < maxCycle)
-        //    {
-        //        for (int i = 0; i < startArr.Length; i++)
-        //        {
-        //            if (startArr[i] == encodedInput)
-        //            {
-        //                encodedInput = endArr[i];
-        //            }
-        //        }
-        //        return DecodeItemName(encodedInput, cycle + 1, maxCycle, startArr, endArr);
-        //    } else
-        //    {
-        //        return encodedInput;
-        //    }
-        //}
+        private static int ReturnValidInt(string input)
+        {
+            int intOutput;
+            bool isValid;
+            do
+            {
+                isValid = int.TryParse(input, out intOutput) && intOutput >= 1;
+                if (!isValid)
+                {
+                    Console.WriteLine("Invalid input.");        // Throw error
+                }
+            } while (!isValid);
+            return intOutput;
+        }
 
         public string PrintArtifact()
         {

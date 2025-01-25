@@ -4,11 +4,6 @@
     {
         static void Main(string[] args)
         {
-            string[] orderedChar = new string[26]
-            { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"};
-            string[] charKey = new string[26]
-            { "H", "Z", "A", "U", "Y", "E", "K", "G", "O", "T", "I", "R", "J", "V", "W", "N", "M", "F", "Q", "S", "D", "B", "X", "L", "C", "P"};
-
             string galacticVault = "D3|X2|C6|V5|J3|O4|K3|V1 U2|O4|X6|L5|K3|P3 U2|N4|J5|H6,Galaxara-IX,Galactic Cycle 4X-142,Sector H-21 - Unit 7,A" +
                 " slender wand that vibrates subtly in the presence of spatial anomalies. Tests have shown it can slightly alter local spacetime fabric;" +
                 " handle with care. Its origin remains a mystery fueling speculations about its use in wormhole creation or manipulation." +
@@ -20,7 +15,6 @@
         /* TO DO
          * Design user experience 
          * Create private helper classes where needed
-         * Char/Int splitter
          * Recursive decoding 
          * Binary search
          * Adding/Returning search 
@@ -43,41 +37,6 @@
             } while (!isValid);
             return intDecision;
         }
-        private static int ReturnValidInt(string input)
-        {
-            int intOutput;
-            bool isValid;
-            do
-            {
-                isValid = int.TryParse(input, out intOutput) && intOutput >= 1;
-                if (!isValid)
-                {
-                    Console.WriteLine("Invalid input. Please try again.");
-                }
-            } while (!isValid);
-            return intOutput;
-        }
-        private static void PrintSearchResult(Artifact artwork)
-        {
-            if (artwork != null)
-            {
-                Console.WriteLine("Search result:");
-                Console.WriteLine(artwork.PrintArtifact());
-            }
-            else
-            {
-                Console.WriteLine("No matching artwork found.");
-            }
-        }
-        private static void PrintArtifact(Artifact[] artArray)
-        {
-            string[] arrayDisplay = new string[artArray.Length];
-            for (int i = 0; i < artArray.Length; i++)
-            {
-                Console.WriteLine(artArray[i].PrintArtifact());
-            }
-        }
-
         //  _______________________________________________________
         //  MANUAL INPUT 
 
