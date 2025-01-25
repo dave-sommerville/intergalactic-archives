@@ -16,10 +16,7 @@
                 "lenses that reveal cosmic energy patterns when worn. Believed to have been used for studying astral phenomena or for interstellar navigation. " +
                 "The frames adjust to fit any wearer suggesting a highly adaptive design.";
 
- 
-
         }
-
         /* TO DO
          * Design user experience 
          * Create private helper classes where needed
@@ -52,7 +49,7 @@
             bool isValid;
             do
             {
-                isValid = int.TryParse(decision, out input) && intOutput >= 1;
+                isValid = int.TryParse(input, out intOutput) && intOutput >= 1;
                 if (!isValid)
                 {
                     Console.WriteLine("Invalid input. Please try again.");
@@ -139,59 +136,6 @@
             string[] nameArray = splitInput[0].Split("|");
             Artifact newArtifact = new Artifact(nameArray, splitInput[1], splitInput[2], splitInput[3], splitInput[4]);
             return newArtifact;
-        }      
-
-        private static void ObjInsert(Artwork[] sortedArray, Artwork newArtwork, int count, string targetProperty)
-        {
-            for (int i = count; i > 0; i--)
-            {
-                string currentProperty = ChooseProperty(sortedArray[i - 1], targetProperty);
-                string newProperty = ChooseProperty(newArtwork, targetProperty);
-                if (string.Compare(currentProperty, newProperty, true) > 0)
-                {
-                    sortedArray[i] = sortedArray[i - 1];
-                }
-                else
-                {
-                    sortedArray[i] = newArtwork;
-                    return;
-                }
-            }
-            sortedArray[0] = newArtwork;
         }
-
-        private static Artwork[] ObjSort(Artwork[] masterArray, string targetProperty, int count)
-        {
-            Artwork[] sortedArray = new Artwork[masterArray.Length];
-            count = 0;
-            for (int i = 0; i < masterArray.Length; i++)
-            {
-                ObjInsert(sortedArray, masterArray[i], count, targetProperty);
-                count++;
-            }
-            return sortedArray;
-        }
-
-        private static Artifact[] AddArtifact()
-        {
-                    private static void ObjInsert(Artwork[] sortedArray, Artwork newArtwork, int count, string targetProperty)
-        {
-            for (int i = count; i > 0; i--)
-            {
-                string currentProperty = ChooseProperty(sortedArray[i - 1], targetProperty);
-                string newProperty = ChooseProperty(newArtwork, targetProperty);
-                if (string.Compare(currentProperty, newProperty, true) > 0)
-                {
-                    sortedArray[i] = sortedArray[i - 1];
-                }
-                else
-                {
-                    sortedArray[i] = newArtwork;
-                    return;
-                }
-            }
-            sortedArray[0] = newArtwork;
-        }
-    }
     }
 }

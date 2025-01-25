@@ -3,10 +3,10 @@
 
 namespace intergalactic_archives
 {
-    public class ArchiveBot
+    public class ResearchDrone
     {
         public static string[] ReadFile(string filepath)
-        {       //  Catches need updating 
+        {       //  Throws need updating 
             try
             {
                 return File.ReadAllLines(filepath);
