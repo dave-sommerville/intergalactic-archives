@@ -23,6 +23,10 @@
             StorageLocation = storageLocation;
             Description = desciption;
         }
+        public static string[] EncryptionCharKey()
+        {
+            
+        }
         // I think this whole thing is whack 
         //public string DecodeItemName(string encodedInput, int cycle, int maxCycle, string[] startArr, string[] endArr)
         //{

@@ -23,6 +23,8 @@
         /* TO DO
          * Design user experience 
          * Create private helper classes where needed
+         * Char/Int splitter
+         * Recursive decoding 
          * Binary search
          * Adding/Returning search 
          * Saving to txt file 
@@ -43,6 +45,20 @@
                 }
             } while (!isValid);
             return intDecision;
+        }
+        private static int ReturnValidInt(string input)
+        {
+            int intOutput;
+            bool isValid;
+            do
+            {
+                isValid = int.TryParse(decision, out input) && intOutput >= 1;
+                if (!isValid)
+                {
+                    Console.WriteLine("Invalid input. Please try again.");
+                }
+            } while (!isValid);
+            return intOutput;
         }
         private static void PrintSearchResult(Artifact artwork)
         {
@@ -68,7 +84,7 @@
         //  _______________________________________________________
         //  MANUAL INPUT 
 
-        private static string ValidatedString() // I think this needs a return if string invalid 
+        private static string ReturnValidString() // I think this needs a return if string invalid 
         {
             string input;
             bool isValid;
@@ -86,13 +102,13 @@
         {
             string[] propertyArray = new string[4];
             Console.WriteLine("Please enter Title:");
-            propertyArray[0] = ValidatedString();
+            propertyArray[0] = ReturnValidString();
             Console.WriteLine("Please enter Artist:");
-            propertyArray[1] = ValidatedString();
+            propertyArray[1] = ReturnValidString();
             Console.WriteLine("Please enter Year:");
-            propertyArray[2] = ValidatedString();
+            propertyArray[2] = ReturnValidString();
             Console.WriteLine("Please enter Medium:");
-            propertyArray[3] = ValidatedString();
+            propertyArray[3] = ReturnValidString();
             return propertyArray;
         }
 
@@ -100,7 +116,7 @@
         //  TXT PROCESSOR 
 
 
-        private static string[] StringSplitter(ref string userInput, Artifact[] newArray)
+        private static string[] StringSplitter(ref string userInput)
         {
             string[] inputStringArr = userInput.Split(",", 6);
             string[] objectInput = new string[5];
@@ -123,7 +139,7 @@
             string[] nameArray = splitInput[0].Split("|");
             Artifact newArtifact = new Artifact(nameArray, splitInput[1], splitInput[2], splitInput[3], splitInput[4]);
             return newArtifact;
-        }
+        }      
 
         private static void ObjInsert(Artwork[] sortedArray, Artwork newArtwork, int count, string targetProperty)
         {
