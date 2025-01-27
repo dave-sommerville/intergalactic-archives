@@ -5,7 +5,7 @@
         static void Main(string[] args)
         {
             //  Processing Galactic Vault 
-            string galacticVault = "./galactic_vault";
+            string galacticVault = "./galactic_vault";  //  Make Constants 
             Artifact[] summaries = new Artifact[0];
             string savedSummary = "expedition_summary.txt";
             string[] vaultProcessor = ResearchDrone.ReadFile(galacticVault);
@@ -111,23 +111,23 @@
         //  _______________________________________________________
         //  TXT PROCESSOR 
 
-
         private static void StringSplitter(string userInput, ref Artifact[] summaryArray)
         {
             string[] inputStringArr = userInput.Split(",", 6);
+            if (inputStringArr.Length < 6) return;
             string[] objectInput = new string[5];
-
-                    //  Might want to make this a constant 
-            for (int i = 0; i < 6; i++)
+            for (int i = 0; i < objectInput.Length; i++)
             {
-                inputStringArr[i] = objectInput[i];
+                objectInput[i] = inputStringArr[i];
             }
             userInput = inputStringArr[5];
             Artifact newArtifact = CreateArtifact(objectInput);
-            summaryArray = InsertArtifact(newArtifact,ref summaryArray);
-            StringSplitter(userInput, ref summaryArray); // Recurrsion, I think it will work 
+            summaryArray = InsertArtifact(newArtifact, ref summaryArray);
+            if (!string.IsNullOrEmpty(userInput))
+            {
+                StringSplitter(userInput, ref summaryArray);
+            }
         }
-
         private static Artifact CreateArtifact(string[] splitInput)
         {
             if (splitInput.Length != 5)
