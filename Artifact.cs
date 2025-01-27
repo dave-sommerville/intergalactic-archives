@@ -43,7 +43,7 @@
                     outputArr[i] = output;
                     break;
                 } else
-                {
+                {   //  I think this is returning incorrectly 
                     outputArr[i] = encodedInput[i];
                     break;
                 }
@@ -89,7 +89,7 @@
 
         public string PrintArtifact()
         {
-            string newLine = $"{EncodedName} | {Planet} | {DiscoveryDate} | {StorageLocation} | {Description}";
+            string newLine = $"{EncodedName}\n{Planet}\n{DiscoveryDate}\n{StorageLocation}\n{Description}";
             return newLine;
         }
     }
