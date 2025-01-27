@@ -4,64 +4,61 @@
     {
         static void Main(string[] args)
         {
-            //  Processing Galactic Vault 
-            string galacticVault = "./galactic_vault";  //  Make Constants 
+            string galacticVault = "data/galactic_vault.txt";
             Artifact[] summaries = new Artifact[0];
             string savedSummary = "expedition_summary.txt";
-            string[] vaultProcessor = ResearchDrone.ReadFile(galacticVault);
-            for (int i = 0; i < vaultProcessor.Length; i++)
-            {
-                StringSplitter(vaultProcessor[i], ref summaries);
-            }
 
-            Console.WriteLine("Welcome ranger");
-            Console.WriteLine("Please choose one of the following options:\n1) Search/Add Artifacts by Name 2) List Artifact Names 3) Save Journal and Exit");
-            int decision = PrintMenu(4);
-            bool isRunning = true;
-            bool isInSumArr = false;
-
-            while (isRunning)
+            try
             {
-                switch(decision)
+                string[] vaultProcessor = ResearchDrone.ReadFile(galacticVault);
+                for (int i = 0; i < vaultProcessor.Length; i++)
                 {
-                    case 1:
-                        string targetArtifact = ReturnValidString();
-                        SearchByName(targetArtifact, ref summaries, ref isInSumArr);
-                        if (!isInSumArr)
-                        {
-                            Console.WriteLine("Would you like to add a new Artifact?\n1) Yes 2) No");
-                            int addDecision = PrintMenu(2);
-                            if (addDecision == 1)
+                    StringSplitter(vaultProcessor[i], ref summaries);
+                }
+
+                Console.WriteLine("Welcome ranger");
+                bool isRunning = true;
+
+                while (isRunning)
+                {
+                    Console.WriteLine("Please choose one of the following options:\n1) Search/Add Artifacts by Name\n2) List Artifact Names\n3) Save Journal and Exit");
+                    int decision = PrintMenu(3);
+
+                    switch (decision)
+                    {
+                        case 1:
+                            string targetArtifact = ReturnValidString("Enter the artifact name: ");
+                            SearchByName(targetArtifact, ref summaries, out bool isInSumArr);
+                            if (!isInSumArr)
                             {
-                                Artifact newArtifact = CreateArtifact(UserEnteredArtwork());
-                                summaries = InsertArtifact(newArtifact, ref summaries);
-                            } else
-                            {
-                                break;
+                                Console.WriteLine("Would you like to add a new Artifact?\n1) Yes\n2) No");
+                                int addDecision = PrintMenu(2);
+                                if (addDecision == 1)
+                                {
+                                    Artifact newArtifact = CreateArtifact(UserEnteredArtwork());
+                                    summaries = InsertArtifact(newArtifact, ref summaries);
+                                }
                             }
-                        }
-                        break;
-                    case 2:
-                        for (int i = 0; i < summaries.Length; i++)
-                        {
-                            Console.WriteLine(summaries[i].PrintName);
-                        }
-                        break;
-                    case 3:
-                        isRunning = false;
-                        break;
-                    default:
-                        break;
+                            break;
+                        case 2:
+                            foreach (Artifact artifact in summaries)
+                            {
+                                Console.WriteLine(artifact.PrintName());
+                            }
+                            break;
+                        case 3:
+                            ResearchDrone.WriteFile(savedSummary, summaries);
+                            isRunning = false;
+                            break;
+                    }
                 }
             }
+            catch (Exception e)
+            {
+                Console.WriteLine($"An error occurred: {e.Message}");
+            }
         }
-        /* TO DO
-         * Design user experience  
-         * Saving to txt file 
-         * Error Throw and Catch 
-        */
-        //  _______________________________________________________
-        //  MENU INTERFACE / DISPLAYS
+
         private static int PrintMenu(int options)
         {
             int intDecision;
@@ -77,78 +74,66 @@
             } while (!isValid);
             return intDecision;
         }
-        //  _______________________________________________________
-        //  MANUAL INPUT 
 
-        private static string ReturnValidString() // I think this needs a return if string invalid 
+        private static string ReturnValidString(string prompt)
         {
+            Console.WriteLine(prompt);
             string input;
-            bool isValid;
-
             do
             {
                 input = Console.ReadLine()?.Trim();
-                isValid = !string.IsNullOrEmpty(input);
-
-            } while (!isValid);
+                if (string.IsNullOrEmpty(input))
+                {
+                    Console.WriteLine("Input cannot be empty. Please try again.");
+                }
+            } while (string.IsNullOrEmpty(input));
             return input;
         }
 
         private static string[] UserEnteredArtwork()
         {
             string[] propertyArray = new string[4];
-            Console.WriteLine("Please enter Title:");
-            propertyArray[0] = ReturnValidString();
-            Console.WriteLine("Please enter Artist:");
-            propertyArray[1] = ReturnValidString();
-            Console.WriteLine("Please enter Year:");
-            propertyArray[2] = ReturnValidString();
-            Console.WriteLine("Please enter Medium:");
-            propertyArray[3] = ReturnValidString();
+            propertyArray[0] = ReturnValidString("Please enter Title:");
+            propertyArray[1] = ReturnValidString("Please enter Artist:");
+            propertyArray[2] = ReturnValidString("Please enter Year:");
+            propertyArray[3] = ReturnValidString("Please enter Medium:");
             return propertyArray;
         }
-
-        //  _______________________________________________________
-        //  TXT PROCESSOR 
 
         private static void StringSplitter(string userInput, ref Artifact[] summaryArray)
         {
             string[] inputStringArr = userInput.Split(",", 6);
-            if (inputStringArr.Length < 6) return;
-            string[] objectInput = new string[5];
-            for (int i = 0; i < objectInput.Length; i++)
-            {
-                objectInput[i] = inputStringArr[i];
-            }
-            userInput = inputStringArr[5];
-            Artifact newArtifact = CreateArtifact(objectInput);
+            if (inputStringArr.Length < 5) return;
+
+            Artifact newArtifact = CreateArtifact(inputStringArr);
             summaryArray = InsertArtifact(newArtifact, ref summaryArray);
-            if (!string.IsNullOrEmpty(userInput))
-            {
-                StringSplitter(userInput, ref summaryArray);
-            }
         }
+
         private static Artifact CreateArtifact(string[] splitInput)
         {
             if (splitInput.Length != 5)
             {
-                Console.WriteLine("Array must have exactly five elements");
+                throw new ArgumentException("Input array must have exactly five elements.");
             }
+
             string[] nameArray = splitInput[0].Split("|");
-            Artifact newArtifact = new Artifact(nameArray, splitInput[1], splitInput[2], splitInput[3], splitInput[4]);
-            return newArtifact;
+            return new Artifact(nameArray, splitInput[1], splitInput[2], splitInput[3], splitInput[4]);
         }
+
         public static Artifact[] InsertArtifact(Artifact artifactToInsert, ref Artifact[] summaryArray)
         {
             Artifact[] summaryUpload = new Artifact[summaryArray.Length + 1];
-
             int insertPos = BinarySearch(artifactToInsert.DecodedName, ref summaryArray);
+
             if (insertPos < 0) insertPos = ~insertPos;
+
             for (int i = 0; i < insertPos; i++)
             {
                 summaryUpload[i] = summaryArray[i];
             }
+
             summaryUpload[insertPos] = artifactToInsert;
+
             for (int i = insertPos; i < summaryArray.Length; i++)
             {
                 summaryUpload[i + 1] = summaryArray[i];
@@ -181,15 +166,17 @@
                 }
             }
 
-            return -1; // Artifact not found
+            return ~low;
         }
-        public static void SearchByName(string decodedName, ref Artifact[] summaryArray,ref bool isInSum)
+
+        public static void SearchByName(string decodedName, ref Artifact[] summaryArray, out bool isInSum)
         {
             int index = BinarySearch(decodedName, ref summaryArray);
-            if (index >= 0)
+            isInSum = index >= 0;
+
+            if (isInSum)
             {
-                Console.WriteLine($"Artifact found: Unencrypted Name = {summaryArray[index].PrintArtifact()}");
-                isInSum = true;
+                Console.WriteLine($"Artifact found:\n{summaryArray[index].PrintArtifact()}");
             }
             else
             {
