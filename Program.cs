@@ -6,44 +6,51 @@
         {
             //  Processing Galactic Vault 
             string galacticVault = "./galactic_vault";
-            Artifact[] summaries = new Artifact[1];
-            Archive artifactArchive = new Archive(summaries);
+            Artifact[] summaries = new Artifact[0];
             string savedSummary = "expedition_summary.txt";
             string[] vaultProcessor = ResearchDrone.ReadFile(galacticVault);
             for (int i = 0; i < vaultProcessor.Length; i++)
             {
-
+                StringSplitter(vaultProcessor[i], ref summaries);
             }
 
             Console.WriteLine("Welcome ranger");
-            Console.WriteLine("Please choose one of the following options:\n1) Search Artifacts by Name 2) List Artifact Names 3) Add New Artifact From Field 4) Save Journal and Exit");
+            Console.WriteLine("Please choose one of the following options:\n1) Search/Add Artifacts by Name 2) List Artifact Names 3) Save Journal and Exit");
             int decision = PrintMenu(4);
-            bool is_Running = true;
+            bool isRunning = true;
+            bool isInSumArr = false;
 
-
-            while (is_Running)
+            while (isRunning)
             {
-                switch(decision + 1)
+                switch(decision)
                 {
                     case 1:
-                        //  Search prompt 
-                        //  Show results 
-                        //  Print main menu again
+                        string targetArtifact = ReturnValidString();
+                        SearchByName(targetArtifact, ref summaries, ref isInSumArr);
+                        if (!isInSumArr)
+                        {
+                            Console.WriteLine("Would you like to add a new Artifact?\n1) Yes 2) No");
+                            int addDecision = PrintMenu(2);
+                            if (addDecision == 1)
+                            {
+                                Artifact newArtifact = CreateArtifact(UserEnteredArtwork());
+                                summaries = InsertArtifact(newArtifact, ref summaries);
+                            } else
+                            {
+                                break;
+                            }
+                        }
                         break;
                     case 2:
-                        //  Call to static method 
-                        //  Print main menu
+                        for (int i = 0; i < summaries.Length; i++)
+                        {
+                            Console.WriteLine(summaries[i].PrintName);
+                        }
                         break;
                     case 3:
-                        //  Entry prompts 
-                        //  Print artifact 
-                        //  Print Main Menu
-                        break;
-                    case 4:
-                        is_Running = false;
+                        isRunning = false;
                         break;
                     default:
-                        //  Print main menu 
                         break;
                 }
             }
@@ -149,20 +156,7 @@
 
             return summaryUpload;
         }
-        //private void SortArtifact()
-        //{
-        //    for (int i = 1; i < artifactArray.Length; i++)
-        //    {
-        //        Artifact key = artifactArray[i];
-        //        string keyDecodedName = key.DecodedName;
-        //        int insertPos = BinarySearch(keyDecodedName);
-        //        for (int j = i - 1; j >= insertPos; j--)
-        //        {
-        //            artifactArray[j + 1] = artifactArray[j];
-        //        }
-        //        artifactArray[insertPos] = key;
-        //    }
-        //}
+
         private static int BinarySearch(string decodedName, ref Artifact[] summaryArray)
         {
             int low = 0;
@@ -188,6 +182,19 @@
             }
 
             return -1; // Artifact not found
+        }
+        public static void SearchByName(string decodedName, ref Artifact[] summaryArray,ref bool isInSum)
+        {
+            int index = BinarySearch(decodedName, ref summaryArray);
+            if (index >= 0)
+            {
+                Console.WriteLine($"Artifact found: Unencrypted Name = {summaryArray[index].PrintArtifact()}");
+                isInSum = true;
+            }
+            else
+            {
+                Console.WriteLine($"Artifact with Name '{decodedName}' not found.");
+            }
         }
     }
 }

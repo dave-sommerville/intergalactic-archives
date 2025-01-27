@@ -1,4 +1,6 @@
-﻿namespace intergalactic_archives
+﻿using System.Runtime.CompilerServices;
+
+namespace intergalactic_archives
 {
     public class Artifact
     {
@@ -90,6 +92,11 @@
         public string PrintArtifact()
         {
             string newLine = $"{EncodedName}\n{Planet}\n{DiscoveryDate}\n{StorageLocation}\n{Description}";
+            return newLine;
+        }
+        public string PrintName()
+        {
+            string newLine = $"{DecodedName}\n";
             return newLine;
         }
     }
