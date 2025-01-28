@@ -20,11 +20,11 @@ namespace intergalactic_archives
         }
         public string PrintArtifact()
         {
-            return $"Name: {DecodedName}\nPlanet: {Planet}\nDiscovery Date: {DiscoveryDate}\nStorage Location: {StorageLocation}\nDescription: {Description}";
+            return $"Name: {DecodedName}\nPlanet: {Planet}\nDiscovery Date: {DiscoveryDate}\nStorage Location: {StorageLocation}\nDescription: {Description}\n\n";
         }
         public string PrintName()
         {
-            return DecodedName;
+            return $"{DecodedName}\n";
         }
     }
 }

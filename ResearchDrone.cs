@@ -1,6 +1,4 @@
 ﻿using System;
-
-
 namespace intergalactic_archives
 {
     public class ResearchDrone
@@ -27,7 +25,6 @@ namespace intergalactic_archives
                 throw;
             }
         }
-
         public static void WriteFile(string filepath, Artifact[] artifacts)
         {
             try
@@ -36,9 +33,7 @@ namespace intergalactic_archives
                 {
                     foreach (Artifact artifact in artifacts)
                     {
-                        // Write the encoded name (split into parts using "|") and other artifact details
-                        string encodedName = string.Join("|", artifact.EncodedName);
-                        writer.WriteLine($"{encodedName},{artifact.Planet},{artifact.DiscoveryDate},{artifact.StorageLocation},{artifact.Description}");
+                        writer.WriteLine($"{artifact.DecodedName},{artifact.Planet},{artifact.DiscoveryDate},{artifact.StorageLocation},{artifact.Description}");
                     }
                 }
                 Console.WriteLine("Artifacts have been successfully saved.");
