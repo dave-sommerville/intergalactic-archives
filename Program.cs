@@ -2,6 +2,9 @@
 {
     public class Program
     {
+        private static readonly string[] orderedChar = { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" };
+        private static readonly string[] charKey = { "H", "Z", "A", "U", "Y", "E", "K", "G", "O", "T", "I", "R", "J", "V", "W", "N", "M", "F", "Q", "S", "D", "B", "X", "L", "C", "P" };
+
         static void Main(string[] args)
         {
             string galacticVault = "data/galactic_vault.txt";
@@ -35,7 +38,7 @@
                                 int addDecision = PrintMenu(2);
                                 if (addDecision == 1)
                                 {
-                                    Artifact newArtifact = CreateArtifact(UserEnteredArtwork());
+                                    Artifact newArtifact = UserEnteredArtifact();
                                     summaries = InsertArtifact(newArtifact, ref summaries);
                                 }
                             }
@@ -90,14 +93,58 @@
             return input;
         }
 
-        private static string[] UserEnteredArtwork()
+        private static Artifact UserEnteredArtifact()
         {
-            string[] propertyArray = new string[4];
-            propertyArray[0] = ReturnValidString("Please enter Title:");
-            propertyArray[1] = ReturnValidString("Please enter Artist:");
-            propertyArray[2] = ReturnValidString("Please enter Year:");
-            propertyArray[3] = ReturnValidString("Please enter Medium:");
-            return propertyArray;
+            string name = ReturnValidString("Please enter Title:");
+            string planet = ReturnValidString("Please enter Artist:");
+            string date = ReturnValidString("Please enter Year:");
+            string location = ReturnValidString("Please enter Medium:");
+            string description = ReturnValidString("Please enter Medium:");
+            Artifact userEntry = new Artifact(name, planet, date, location, description);
+            return userEntry;
+        }
+        public static string DecodeName(string[] encodedInput)
+        {
+            string[] outputArr = new string[encodedInput.Length];
+            for (int i = 0; i < encodedInput.Length; i++)
+            {
+                if (encodedInput[i].Contains(" "))
+                {
+                    string[] wordBrArr = encodedInput[i].Split(" ");
+                    for (int j = 0; j < wordBrArr.Length; j++)
+                    {
+                        wordBrArr[j] = DecodeChar(wordBrArr[j], 1);
+                    }
+                    string output = string.Join(" ", wordBrArr);
+                    outputArr[i] = output;
+                }
+                else
+                {
+                    outputArr[i] = DecodeChar(encodedInput[i], 1);
+                }
+            }
+            return string.Join("", outputArr);
+        }
+        private string DecodeChar(string codeChar, int cycle)
+        {
+            string letterPart = codeChar.Substring(0, 1);
+            int numberPart = int.Parse(codeChar.Substring(1));
+            if (cycle < numberPart)
+            {
+                for (int i = 0; i < orderedChar.Length; i++)
+                {
+                    if (orderedChar[i] == letterPart)
+                    {
+                        letterPart = charKey[i];
+                        break;
+                    }
+                }
+                return DecodeChar(letterPart + numberPart.ToString(), cycle + 1);
+            }
+            else
+            {
+                return letterPart;
+            }
         }
 
         private static void StringSplitter(string userInput, ref Artifact[] summaryArray)
@@ -117,7 +164,7 @@
             }
 
             string[] nameArray = splitInput[0].Split("|");
-            return new Artifact(nameArray, splitInput[1], splitInput[2], splitInput[3], splitInput[4]);
+            return new Artifact(DecodeName(nameArray), splitInput[1], splitInput[2], splitInput[3], splitInput[4]);
         }
 
         public static Artifact[] InsertArtifact(Artifact artifactToInsert, ref Artifact[] summaryArray)
