@@ -2,7 +2,6 @@
 
 namespace intergalactic_archives
 {
-
     public class Artifact
     {
         public string DecodedName;
@@ -12,11 +11,11 @@ namespace intergalactic_archives
         public string Description;
         public Artifact(string decodedName, string planet, string discoveryDate, string storageLocation, string description)
         {
-            DecodedName = decodedName;
-            Planet = planet;
-            DiscoveryDate = discoveryDate;
-            StorageLocation = storageLocation;
-            Description = description;
+            DecodedName = decodedName ?? throw new ArgumentNullException(nameof(decodedName), "Decoded name cannot be null");
+            Planet = planet ?? throw new ArgumentNullException(nameof(planet), "Planet cannot be null");
+            DiscoveryDate = discoveryDate ?? throw new ArgumentNullException(nameof(discoveryDate), "Discovery date cannot be null");
+            StorageLocation = storageLocation ?? throw new ArgumentNullException(nameof(storageLocation), "Storage location cannot be null");
+            Description = description ?? throw new ArgumentNullException(nameof(description), "Description cannot be null");
         }
         public string PrintArtifact()
         {

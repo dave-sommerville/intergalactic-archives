@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+
 namespace intergalactic_archives
 {
     public class ResearchDrone
@@ -19,9 +21,14 @@ namespace intergalactic_archives
                 Console.WriteLine("You do not have permission to access this file");
                 throw;
             }
+            catch (IOException e)
+            {
+                Console.WriteLine($"I/O error occurred: {e.Message}");
+                throw;
+            }
             catch (Exception e)
             {
-                Console.WriteLine($"An error occurred: {e.Message}");
+                Console.WriteLine($"An unexpected error occurred: {e.Message}");
                 throw;
             }
         }
@@ -48,9 +55,19 @@ namespace intergalactic_archives
                 Console.WriteLine("The directory was not found.");
                 throw;
             }
+            catch (PathTooLongException)
+            {
+                Console.WriteLine("The file path is too long.");
+                throw;
+            }
+            catch (IOException e)
+            {
+                Console.WriteLine($"I/O error occurred: {e.Message}");
+                throw;
+            }
             catch (Exception e)
             {
-                Console.WriteLine($"An error occurred: {e.Message}");
+                Console.WriteLine($"An unexpected error occurred: {e.Message}");
                 throw;
             }
         }

@@ -4,7 +4,7 @@
     {
         private static readonly string[] orderedChar = { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" };
         private static readonly string[] charKey = { "H", "Z", "A", "U", "Y", "E", "K", "G", "O", "T", "I", "R", "J", "V", "W", "N", "M", "F", "Q", "S", "D", "B", "X", "L", "C", "P" };
-        private static readonly string[] reversedChar = { "Z", "Y", "X", "W", "V", "U", "T", "S", "R", "Q", "P", "O", "N", "M", "L", "K", "J", "I", "H", "G", "F", "E", "D", "C", "B", "A"};
+        private static readonly string[] reversedChar = { "Z", "Y", "X", "W", "V", "U", "T", "S", "R", "Q", "P", "O", "N", "M", "L", "K", "J", "I", "H", "G", "F", "E", "D", "C", "B", "A" };
         static void Main(string[] args)
         {
             const string GALACTIC_VAULT = "data/galactic_vault.txt";
@@ -15,6 +15,7 @@
                 string[] vaultProcessor = ResearchDrone.ReadFile(GALACTIC_VAULT);
                 string[] artifactArchive = ResearchDrone.ReadFile(SAVED_SUMMARY);
                 summaries = PopulateFromArchives(artifactArchive);
+
                 if (vaultProcessor != null)
                 {
                     for (int i = 0; i < vaultProcessor.Length; i++)
@@ -26,7 +27,7 @@
                 Console.WriteLine("Welcome Back Ranger");
                 bool isRunning = true;
                 while (isRunning)
-                {   
+                {
                     Console.WriteLine("Please choose one of the following options:\n1) Search/Add Artifacts by Name\n2) List Artifact Names\n3) Save Journal and Exit\n");
                     int decision = PrintMenu(3);
                     switch (decision)
@@ -52,7 +53,14 @@
                             }
                             break;
                         case 3:
-                            ResearchDrone.WriteFile(SAVED_SUMMARY, summaries);
+                            try
+                            {
+                                ResearchDrone.WriteFile(SAVED_SUMMARY, summaries);
+                            }
+                            catch (Exception e)
+                            {
+                                Console.WriteLine($"Error saving file: {e.Message}");
+                            }
                             isRunning = false;
                             break;
                     }
@@ -63,6 +71,18 @@
                 Console.WriteLine($"An error occurred: {e.Message}");
             }
         }
+        //      RETREIVE EXPEDITION SUMMARIES 
+        public static Artifact[] PopulateFromArchives(string[] archiveInput)
+        {
+            Artifact[] archivedSummaries = new Artifact[archiveInput.Length];
+            for (int i = 0; i < archivedSummaries.Length; i++)
+            {
+                string[] splitLineInput = archiveInput[i].Split(",");
+                archivedSummaries[i] = new Artifact(splitLineInput[0], splitLineInput[1], splitLineInput[2], splitLineInput[3], splitLineInput[4]);
+            }
+            return archivedSummaries;
+        }
+        //      USER INTERFACE
         private static int PrintMenu(int options)
         {
             int intDecision;
@@ -78,7 +98,20 @@
             } while (!isValid);
             return intDecision;
         }
+        public static void SearchByName(string decodedName, ref Artifact[] summaryArray, out bool isInSum)
+        {
+            int index = BinarySearch(decodedName, ref summaryArray);
+            isInSum = index >= 0;
 
+            if (isInSum)
+            {
+                Console.WriteLine($"Artifact found:\n{summaryArray[index].PrintArtifact()}");
+            }
+            else
+            {
+                Console.WriteLine($"Artifact with Name '{decodedName}' not found.");
+            }
+        }
         private static string ReturnValidString(string prompt)
         {
             Console.WriteLine(prompt);
@@ -93,7 +126,6 @@
             } while (string.IsNullOrEmpty(input));
             return input;
         }
-
         private static Artifact UserEnteredArtifact()
         {
             string name = ReturnValidString("Please enter item name:");
@@ -103,6 +135,36 @@
             string description = ReturnValidString("Please enter description of item:");
             Artifact userEntry = new Artifact(name, planet, date, location, description);
             return userEntry;
+        }
+        //  ENCRYPTION PROCESSING
+        private static void StringDecryptor(string userInput, ref Artifact[] summaryArray)
+        {
+            string[] inputStringArr = userInput.Split(",", 6);
+            if (inputStringArr.Length < 5) return;
+
+            Artifact newArtifact = CreateDecryptedArtifact(inputStringArr);
+            summaryArray = InsertArtifact(newArtifact, ref summaryArray);
+        }
+        private static string DecodeChar(string codeChar, int cycle)
+        {
+            string letterPart = codeChar.Substring(0, 1);
+            int numberPart = int.Parse(codeChar.Substring(1));
+            if (cycle < numberPart)
+            {
+                for (int i = 0; i < orderedChar.Length; i++)
+                {
+                    if (orderedChar[i] == letterPart)
+                    {
+                        letterPart = charKey[i];
+                        break;
+                    }
+                }
+                return DecodeChar(letterPart + numberPart.ToString(), cycle + 1);
+            }
+            else
+            {
+                return letterPart;
+            }
         }
         public static string DecodeName(string[] encodedInput)
         {
@@ -152,46 +214,7 @@
             }
             return string.Join("", charOutput); 
         }
-        private static string DecodeChar(string codeChar, int cycle)
-        {
-            string letterPart = codeChar.Substring(0, 1);
-            int numberPart = int.Parse(codeChar.Substring(1)); 
-            if (cycle < numberPart)
-            {
-                for (int i = 0; i < orderedChar.Length; i++)
-                {
-                    if (orderedChar[i] == letterPart)
-                    {
-                        letterPart = charKey[i];
-                        break;
-                    }
-                }
-                return DecodeChar(letterPart + numberPart.ToString(), cycle + 1);
-            }
-            else
-            {
-                return letterPart;
-            }
-        }
-        private static void StringDecryptor(string userInput, ref Artifact[] summaryArray)
-        {
-            string[] inputStringArr = userInput.Split(",", 6);
-            if (inputStringArr.Length < 5) return;
-
-            Artifact newArtifact = CreateDecryptedArtifact(inputStringArr);
-            summaryArray = InsertArtifact(newArtifact, ref summaryArray);
-        }
-        public static Artifact[] PopulateFromArchives(string[] archiveInput)
-        {
-            Artifact[] archivedSummaries = new Artifact[archiveInput.Length];
-            for (int i = 0; i < archivedSummaries.Length;i++)
-            {
-                string[] splitLineInput = archiveInput[i].Split(",");
-                archivedSummaries[i] = new Artifact(splitLineInput[0], splitLineInput[1], splitLineInput[2], splitLineInput[3], splitLineInput[4]);
-            }
-            return archivedSummaries;
-        }
-
+        //      OBJECT CREATION FROM DECRYPTED INPUT
         private static Artifact CreateDecryptedArtifact(string[] splitInput)
         {
             if (splitInput.Length != 5)
@@ -224,6 +247,7 @@
             }
             return summaryUpload;
         }
+        //  BINARY SEARCH HELPER FUNCTION
         private static int BinarySearch(string decodedName, ref Artifact[] summaryArray)
         {
             int low = 0;
@@ -248,20 +272,6 @@
                 }
             }
             return ~low;
-        }
-        public static void SearchByName(string decodedName, ref Artifact[] summaryArray, out bool isInSum)
-        {
-            int index = BinarySearch(decodedName, ref summaryArray);
-            isInSum = index >= 0;
-
-            if (isInSum)
-            {
-                Console.WriteLine($"Artifact found:\n{summaryArray[index].PrintArtifact()}");
-            }
-            else
-            {
-                Console.WriteLine($"Artifact with Name '{decodedName}' not found.");
-            }
         }
     }
 }
